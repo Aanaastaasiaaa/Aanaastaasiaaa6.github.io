@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор стоимости заказа</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .calculator {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .cost {
+            font-size: 28px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Калькулятор стоимости заказа</h1>
+        <p>Рассчитайте стоимость вашего заказа</p>
+    </div>
+
+    <div class="calculator">
+        <div class="form-group">
+            <label for="quantity">Количество товара:</label>
+            <input type="text" id="quantity" placeholder="Введите количество">
+            <div id="quantity-error" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="product">Выберите товар:</label>
+            <select id="product">
+                <option value="12990">Смартфон - 12 990 руб.</option>
+                <option value="5490">Наушники беспроводные - 5 490 руб.</option>
+                <option value="1990">Чехол для телефона - 1 990 руб.</option>
+                <option value="25990">Планшет - 25 990 руб.</option>
+                <option value="8990">Умные часы - 8 990 руб.</option>
+            </select>
+        </div>
+
+        <button id="calculate-btn">Рассчитать стоимость</button>
+
+        <div id="result" class="result">
+            <h3>Стоимость заказа:</h3>
+            <div class="cost" id="total-cost">0 руб.</div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    Разработка пользовательского Web-интерфейса &copy; 2024
+</div>
+
+<script>
+    function validateQuantity(input) {
+        const regex = /^\d+$/; // Регулярное выражение для проверки целых чисел
+        const match = input.match(regex);
+        return match !== null && parseInt(input) > 0;
+    }
+
+    function calculateCost() {
+        const quantityInput = document.getElementById('quantity').value.trim();
+        const productSelect = document.getElementById('product');
+        const errorElement = document.getElementById('quantity-error');
+        const resultElement = document.getElementById('result');
+        const totalCostElement = document.getElementById('total-cost');
+
+        errorElement.textContent = '';
+        errorElement.classList.remove('show');
+        resultElement.classList.remove('show');
+
+        if (quantityInput === '') {
+            errorElement.textContent = 'Пожалуйста, введите количество товара';
+            errorElement.classList.add('show');
+            return;
+        }
+
+        if (!validateQuantity(quantityInput)) {
+            errorElement.textContent = 'Пожалуйста, введите корректное количество (целое положительное число)';
+            errorElement.classList.add('show');
+            return;
+        }
+
+        const quantity = parseInt(quantityInput);
+        const price = parseInt(productSelect.value);
+
+        if (quantity > 1000) {
+            errorElement.textContent = 'Количество не может превышать 1000 единиц';
+            errorElement.classList.add('show');
+            return;
+        }
+
+        const totalCost = quantity * price;
+
+        const formattedCost = totalCost.toLocaleString('ru-RU');
+        totalCostElement.textContent = ${formattedCost} руб.;
+        resultElement.classList.add('show');
+    }
+
+    function handleEnterKey(event) {
+        if (event.key === 'Enter') {
+            calculateCost();
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded and parsed");
+
+        const calculateBtn = document.getElementById('calculate-btn');
+        const quantityInput = document.getElementById('quantity');
+
+        calculateBtn.addEventListener('click', calculateCost);
+        quantityInput.addEventListener('keypress', handleEnterKey);
+
+        quantityInput.focus();
+    });
+</script>
+</body>
+</html>
