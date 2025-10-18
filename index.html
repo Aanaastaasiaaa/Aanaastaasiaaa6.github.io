@@ -4,105 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор стоимости заказа</title>
-
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>Калькулятор стоимости заказа</h1>
-        <p>Рассчитайте стоимость вашего заказа</p>
-    </div>
+<h1>Калькулятор стоимости заказа</h1>
 
-    <div class="calculator">
-        <div class="form-group">
-            <label for="quantity">Количество товара:</label>
-            <input type="text" id="quantity" placeholder="Введите количество">
-            <div id="quantity-error" class="error"></div>
-        </div>
-
-        <div class="form-group">
-            <label for="product">Выберите товар:</label>
-            <select id="product">
-                <option value="12990">Смартфон - 12 990 руб.</option>
-                <option value="5490">Наушники беспроводные - 5 490 руб.</option>
-                <option value="1990">Чехол для телефона - 1 990 руб.</option>
-                <option value="25990">Планшет - 25 990 руб.</option>
-                <option value="8990">Умные часы - 8 990 руб.</option>
-            </select>
-        </div>
-
-        <button id="calculate-btn">Рассчитать стоимость</button>
-
-        <div id="result" class="result">
-            <h3>Стоимость заказа:</h3>
-            <div class="cost" id="total-cost">0 руб.</div>
-        </div>
-    </div>
+<div>
+    <label for="quantity">Количество товара:</label><br>
+    <input type="text" id="quantity" placeholder="Введите количество">
+    <div id="quantity-error" style="color: red; display: none;"></div>
 </div>
 
-<script>
-    function validateQuantity(input) {
-        const regex = /^\d+$/; // Регулярное выражение для проверки целых чисел
-        const match = input.match(regex);
-        return match !== null && parseInt(input) > 0;
-    }
+<div style="margin-top: 15px;">
+    <label for="product">Выберите товар:</label><br>
+    <select id="product">
+        <option value="12990">Телевизор - 12 990 руб.</option>
+        <option value="5490">Плойка для волос - 5 490 руб.</option>
+        <option value="1990">Тостер - 1 990 руб.</option>
+        <option value="25990">Телефон - 25 990 руб.</option>
+        <option value="8990">Пылесос - 8 990 руб.</option>
+    </select>
+</div>
 
-    function calculateCost() {
-        const quantityInput = document.getElementById('quantity').value.trim();
-        const productSelect = document.getElementById('product');
-        const errorElement = document.getElementById('quantity-error');
-        const resultElement = document.getElementById('result');
-        const totalCostElement = document.getElementById('total-cost');
+<button id="calculate-btn" style="margin-top: 15px; padding: 10px 20px;">Рассчитать стоимость</button>
 
-        errorElement.textContent = '';
-        errorElement.classList.remove('show');
-        resultElement.classList.remove('show');
+<div id="result" style="margin-top: 20px; padding: 15px; background: #f0f0f0; display: none;">
+    <h3>Стоимость заказа:</h3>
+    <div id="total-cost" style="font-size: 24px; font-weight: bold; color: green;">0 руб.</div>
+</div>
 
-        if (quantityInput === '') {
-            errorElement.textContent = 'Пожалуйста, введите количество товара';
-            errorElement.classList.add('show');
-            return;
-        }
-
-        if (!validateQuantity(quantityInput)) {
-            errorElement.textContent = 'Пожалуйста, введите корректное количество (целое положительное число)';
-            errorElement.classList.add('show');
-            return;
-        }
-
-        const quantity = parseInt(quantityInput);
-        const price = parseInt(productSelect.value);
-
-        if (quantity > 1000) {
-            errorElement.textContent = 'Количество не может превышать 1000 единиц';
-            errorElement.classList.add('show');
-            return;
-        }
-
-        const totalCost = quantity * price;
-
-        const formattedCost = totalCost.toLocaleString('ru-RU');
-        totalCostElement.textContent = ${formattedCost} руб.;
-        resultElement.classList.add('show');
-    }
-
-    function handleEnterKey(event) {
-        if (event.key === 'Enter') {
-            calculateCost();
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM fully loaded and parsed");
-
-        const calculateBtn = document.getElementById('calculate-btn');
-        const quantityInput = document.getElementById('quantity');
-
-        calculateBtn.addEventListener('click', calculateCost);
-        quantityInput.addEventListener('keypress', handleEnterKey);
-
-        quantityInput.focus();
-    });
-</script>
+<script src="calculator.js" defer></script>
 </body>
 </html>
